@@ -3,7 +3,12 @@ const app = express();
 const port = 3000;
 const today = new Date();
 var t = today.getHours() + ":" + today.getMinutes();
-const st = "s";
+const movies = [
+    { title: 'Jaws', year: 1975, rating: 8 },
+    { title: 'Avatar', year: 2009, rating: 7.8 },
+    { title: 'Brazil', year: 1985, rating: 8 },
+    { title: 'الإرهاب والكباب‎', year: 1992, rating: 6.2 }
+]
 app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Ok");
@@ -34,4 +39,18 @@ app.get("/search", (req, res) => {
       error: true,
       message: "you have to provide a search",
     });
+
 });
+app.get("/test/movies/create", (req, res) => {
+    res.send({ status: 200, message: "create" });
+});
+app.get("/test/movies/read", (req, res) => {
+    res.send({ status: 200, message: "read" ,data:movies});
+});
+app.get("/test/movies/update", (req, res) => {
+    res.send({ status: 200, message: "update" });
+});
+app.get("/test/movies/delete", (req, res) => {
+    res.send({ status: 200, message: "delete" });
+});
+
