@@ -99,9 +99,9 @@ app.get("/movies/add", (req, res) => {
     if (title !== "" && year !== "" &&year.length==4 && !isNaN(y))
      {
         if (rating!=="") {
-          movies.push({ title: title, year: year, rating: rating });
+          movies.push({ title: title, year: parseInt(year), rating: parseInt(rating) });
           
-        }else{movies.push({ title: title, year: year, rating:4 });}
+        }else{movies.push({ title: title, year: parseInt(year), rating:4 });}
         res.send({ status: 200, data: movies });
     }else {
         res.status(403).send({
@@ -111,13 +111,13 @@ app.get("/movies/add", (req, res) => {
         })
     }
 });
-/////////////step 9   && !isNaN(parseInt(id))
+/////////////step 9  
 app.get("/movies/delete/:id", (req, res) => {
     
     const { id } = req.params;
     if(id<=movies.length && id>=0 )
     {
-        movies.splice(id, 1);
+        movies.splice(id-1, 1);
         res.send({ status: 200, data: movies });
     }else {res.status(404).send({
         status: 404,
@@ -125,3 +125,24 @@ app.get("/movies/delete/:id", (req, res) => {
         message: `the movie ${req.params.id} does not exist`,})
     }
 });
+///////// step 10     /movies/update/<ID>?title=<NEW_TITLE>,
+app.get("/movies/update/:id", (req, res) => {
+    let { id } = req.params;
+    let title = req.query.title;
+    let year = req.query.year;
+    let rating = req.query.rating;
+    id=id-1;
+    if(title!=""){movies[id].title=title;}
+    if(year!="" && year.length==4 && !isNaN(parseInt(year))){movies[id].year=parseInt(year);}
+    if(rating!=""&& rating>0){movies[id].rating=parseInt(rating);}
+    res.send({ status: 200, data: movies });
+})
+
+
+
+
+
+
+
+
+
