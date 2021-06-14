@@ -38,7 +38,7 @@ app.get("/search", (req, res) => {
       status: 500,
       error: true,
       message: "you have to provide a search",
-    });
+    });moviesmovies
 
 });
 app.get("/test/movies/create", (req, res) => {
@@ -54,3 +54,26 @@ app.get("/test/movies/delete", (req, res) => {
     res.send({ status: 200, message: "delete" });
 });
 
+app.get("/movies/read/by-date", function(req, res){
+    movies.sort(function(a,b){
+        return b.year-a.year;
+    });
+    // res.send({ status: 200, message:"ordered by Date"})
+    res.send({ status: 200, message: movies });
+});
+
+app.get("/movies/read/by-rate", function(req, res){
+    movies.sort(function(a,b){
+        return b.rating-a.rating;
+    });
+    res.send({ status: 200, message: movies });
+});
+
+app.get("/movies/read/by-title", function(req, res){
+    movies.sort(function(a,b){
+        if(a.title<b.title) return -1;
+        if(a.title>b.title) return 1;
+        return 0;
+    });
+    res.send({ status: 200, message: movies });
+});
