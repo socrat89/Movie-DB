@@ -1,6 +1,21 @@
 const express = require("express");
 const app = express();
 const port = 3000;
+app.use(express.json());
+// let router = express.Router();
+// const bodyParser=require('body-parser');
+// const cors=require('cors');
+// app.use(cors());
+// app.use(bodyParser());
+// app.use(bodyParser.urlencoded({extended:false}));
+// app.use(bodyParser.json());
+app.get("/", (req, res) => {
+  res.send("Ok");
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
+});
 const today = new Date();
 var t = today.getHours() + ":" + today.getMinutes();
 const movies = [
@@ -9,14 +24,9 @@ const movies = [
   { title: "Brazil", year: 1985, rating: 8 },
   { title: "الإرهاب والكباب‎", year: 1992, rating: 6.2 },
 ];
-app.use(express.json());
-app.get("/", (req, res) => {
-  res.send("Ok");
-});
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
+
+
 app.get("/test", (req, res) => {
   res.send({ status: 200, message: "ok" });
 });
@@ -91,10 +101,10 @@ app.get("/movies/read/id/:id", (req, res) => {
   }
 });
 ////////////////step8
-app.get("/movies/add", (req, res) => {
-    const title = req.query.title;
-    const year = req.query.year;
-    const rating = req.query.rating;
+app.post("/movies/add", (req, res) => {
+    const title = req.body.title;
+    const year = req.body.year;
+    const rating = req.body.rating;
     const y=parseInt(year);
     if (title !== "" && year !== "" &&year.length==4 && !isNaN(y))
      {
@@ -112,7 +122,7 @@ app.get("/movies/add", (req, res) => {
     }
 });
 /////////////step 9  
-app.get("/movies/delete/:id", (req, res) => {
+app.delete("/movies/delete/:id", (req, res) => {
     
     const { id } = req.params;
     if(id<=movies.length && id>=0 )
@@ -126,11 +136,11 @@ app.get("/movies/delete/:id", (req, res) => {
     }
 });
 ///////// step 10     /movies/update/<ID>?title=<NEW_TITLE>,
-app.get("/movies/update/:id", (req, res) => {
+app.put("/movies/update/:id", (req, res) => {
     let { id } = req.params;
-    let title = req.query.title;
-    let year = req.query.year;
-    let rating = req.query.rating;
+    let title = req.body.title;
+    let year = req.body.year;
+    let rating = req.body.rating;
     id=id-1;
     if(title!=""){movies[id].title=title;}
     if(year!="" && year.length==4 && !isNaN(parseInt(year))){movies[id].year=parseInt(year);}
@@ -138,10 +148,9 @@ app.get("/movies/update/:id", (req, res) => {
     res.send({ status: 200, data: movies });
 })
 
-
-
-
-
+/////step 11    replace get with (post for adding)(delete for removing)(put for updating)
+////// also add a middle (app.use(express.json());) 
+////// use body insted of query
 
 
 
