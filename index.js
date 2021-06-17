@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const port = 3000;
 app.use(express.json());
+const mongoose = require('mongoose')
 // let router = express.Router();
 // const bodyParser=require('body-parser');
 // const cors=require('cors');
@@ -14,7 +15,7 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Example app  listening at http://localhost:${port}`);
 });
 const today = new Date();
 var t = today.getHours() + ":" + today.getMinutes();
@@ -149,9 +150,97 @@ app.put("/movies/update/:id", (req, res) => {
 })
 
 /////step 11    replace get with (post for adding)(delete for removing)(put for updating)
-////// also add a middle (app.use(express.json());) 
+////// also add a middleware (app.use(express.json());) 
 ////// use body insted of query
 
+///////////step 12
 
 
 
+try{
+  mongoose.connect
+  ('mongodb+srv://socrat89:socrat804499@cluster0.6b0wk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+  {useNewUrlParser: true, useUnifiedTopology: true}, function(){
+      console.log("Connected to MongoDB ");
+  })
+} catch(error){
+  console.log("dddddddddddddddddd");
+}
+
+var MovieSchema = mongoose.Schema({
+  title: {
+      type: String,
+      require:true
+  },
+  year: {
+      type: Number,
+      require:true
+  },
+  rating:{
+      type: Number,
+      default:4
+  }
+});
+var testMovies = mongoose.model('movies', MovieSchema);
+
+app.get("/movies/read", function (req, res) {
+  const Read = testMovies.save()
+  res.send({ status: 200, message: Read });
+})
+///////////
+app.post("/movies/add1", function(req, res) {
+  const title = req.body.title;
+  const year = req.body.year;
+  const rating = req.body.rating;
+  const y=parseInt(year);
+  
+  if (title !== "" && year !== "" &&year.length==4 && !isNaN(y))
+   {
+      if (rating!=="") {
+      //   movies.push({ title: title, year: parseInt(year), rating: parseInt(rating) });
+      newmovie=new testMovies ({title:title, year:parseInt(year), rating:parseInt(rating)})
+
+      }else{
+          // movies.push({ title: title, year: parseInt(year), rating:4 });
+          newmovie=new testMovies ({title:title, year:parseInt(year), rating:4})
+           }
+           const movies = newmovie.save()
+           res.send({ status: 200, data: movies ,message:newmovie});
+  }else {
+      res.status(403).send({
+          status: 403,
+          error: true,
+          message:"you cannot create a movie without providing a title and a year",
+      })
+  }
+});
+app.delete("/movies/delete1/:id", function(req, res){
+    
+  const { id } = req.params;
+  if(id<=movies.length && id>=0 )
+  {
+      // movies.splice(id-1, 1);
+      // id=id-1;
+      // JSON.stringify(testMovies);
+      const DeleteMovie =  testMovies.remove({id})
+      res.send({status:200, message:DeleteMovie})
+      res.send({ status: 200, data: movies });
+  }else {res.status(404).send({
+      status: 404,
+       error: true,
+      message: `the movie ${req.params.id} does not exist`,})
+  }
+});
+app.put("/movies/update1/:id", function(req, res) {
+  let { id } = req.params;
+  let title1 = req.body.title;
+  let year1 = req.body.year;
+  let rating1 = req.body.rating;
+  id=id-1;
+   
+  var update={$set:{title:title1,year:year1,rating:rating1}};
+  const UpdateMovies =  testMovies.updateOne(id, update);
+  res.status(200).send(UpdateMovies);
+
+  
+})
